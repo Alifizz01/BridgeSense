@@ -1,4 +1,37 @@
-# pressure-frontend
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.svg">
+    <img src="assets/logo.svg" alt="BridgeSense" width="360">
+  </picture>
+</p>
+
+<p align="center">
+  <b>A pressure-sensor front-end, designed and checked before any copper.</b><br>
+  Bridge, INA333 in-amp, anti-alias RC and 24-bit ADC: ngspice netlists checked in CI, an error budget with Monte Carlo, and a pressure x temperature calibration.
+</p>
+
+<p align="center">
+  <a href="https://github.com/Alifizz01/BridgeSense/actions/workflows/ci.yml"><img src="https://github.com/Alifizz01/BridgeSense/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/ngspice-checked%20in%20CI-2E7D32" alt="ngspice">
+  <img src="https://img.shields.io/badge/python-3.10%2B-3776AB" alt="python">
+</p>
+
+<table>
+<tr>
+<td width="50%"><img src="docs/residual_before.png" alt="Calibration error before the fit"></td>
+<td width="50%"><img src="docs/residual_after.png" alt="Calibration error after the 2D polynomial fit"></td>
+</tr>
+</table>
+
+> **Scope:** Design and simulation only: no schematic, PCB or measurement; simplified in-amp model; synthetic sensor data. Personal portfolio project, not affiliated with any employer.
+
+---
+
+## The problem
+
+A millivolt bridge signal goes through gain, filtering and conversion, and every stage adds offset, gain error and noise. Picking parts by feel tells you nothing about the final accuracy; this project puts a number on each stage before a board exists.
+
+## Overview
 
 Design study of a multi-channel front-end for piezoresistive pressure sensors, of the kind used on
 multi-hole flow probes: bridge, instrumentation amplifier, anti-alias filter, 24-bit delta-sigma ADC.
