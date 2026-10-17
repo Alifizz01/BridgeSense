@@ -1,0 +1,49 @@
+* One channel of the pressure front-end: bridge -> INA (3-op-amp, INA333-like) -> RC anti-alias -> ADC input
+* Behavioural models only. No vendor model is bundled; see README for the datasheet values used.
+.param vexc=3.3 rb=5k d=2.5m
+.param rg=2.55k rf=50k
+.param raa=1k cdiff=82n ccm=4.7n
+.param ren=75.5k   ; thermal noise of two of these = 50 nV/rtHz total, models INA333 e_n
+.param gbw=350k    ; per op amp
+
+VEXC exc 0 {vexc}
+* bridge: left leg fixed, right leg imbalanced by +-d (d=2.5m gives 0.5*vexc*d... see README)
+R1 exc bl {rb}
+R2 bl 0 {rb}
+R3 exc br {rb*(1-d)}
+R4 br 0 {rb*(1+d)}
+* small-signal source for AC/noise, in series with + input (dc 0)
+VSIG br inp_s dc 0 ac 1
+
+* amplifier input noise model (noiseless ideal op amp inputs draw no current)
+RENP inp_s inp {ren}
+RENN bl inn {ren}
+
+.subckt oa p n o
+E1 x 0 p n 1e6
+R1 x y 1k
+C1 y 0 {1e6/(2*3.14159265*1k*gbw)}
+E2 o 0 y 0 1
+.ends
+
+* input stage
+XA1 inp a1 o1 oa
+XA2 inn a2 o2 oa
+RF1 o1 a1 {rf}
+RG  a1 a2 {rg}
+RF2 o2 a2 {rf}
+* difference amp, unity gain, REF = mid supply
+VREF ref 0 {vexc/2}
+XA3 d3p d3n out oa
+R5 o2 d3n 100k
+R6 out d3n 100k
+R7 o1 d3p 100k
+R8 ref d3p 100k
+
+* differential RC anti-alias filter in front of ADC (AINP=adcp, AINN=adcn)
+RAP out adcp {raa}
+RAN ref adcn {raa}
+CD adcp adcn {cdiff}
+CCP adcp 0 {ccm}
+CCN adcn 0 {ccm}
+.end

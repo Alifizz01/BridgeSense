@@ -1,0 +1,18 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: sudo apt-get update && sudo apt-get install -y ngspice
+      - run: pip install -r requirements.txt
+      - name: ngspice measurements
+        run: python spice_check.py
+      - name: pytest (SPICE checks are required here, not skipped)
+        run: pytest -q
+      - name: budget
+        run: python calibrate.py && python budget.py >> "$GITHUB_STEP_SUMMARY"

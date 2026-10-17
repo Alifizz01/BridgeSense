@@ -1,0 +1,25 @@
+* driver: include the circuit, run op / ac / noise, print measurements as KEY=value
+.include frontend.cir
+.control
+op
+let vin = v(br) - v(bl)
+let vadc = v(adcp) - v(adcn)
+echo "VIN_DC=$&vin"
+echo "VADC_DC=$&vadc"
+ac dec 50 1 1meg
+let h = mag(v(adcp) - v(adcn))
+meas ac g0 find h at=1
+let hdb = db(h)
+let lim = hdb[0] - 3
+meas ac f3db when hdb=lim fall=1
+meas ac g256k find hdb at=256e3
+echo "G_AC=$&g0"
+echo "F3DB=$&f3db"
+echo "ATT256K_DB=$&g256k"
+noise v(adcp,adcn) VSIG dec 50 0.1 1k
+setplot noise2
+echo "ONOISE_RMS_1K=$&onoise_total"
+echo "INOISE_RMS_1K=$&inoise_total"
+quit
+.endc
+.end

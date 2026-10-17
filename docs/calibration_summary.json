@@ -1,0 +1,6 @@
+{
+  "model": "P = sum coef_ij * vn^i * tn^j, vn = V / 0.033 V, tn = (T - 25) / 50 degC",
+  "max_abs_residual_before_pa": 763.9290039946118,
+  "max_abs_residual_after_pa": 3.194528162421193,
+  "rms_residual_after_pa": 1.7124226562564924
+}
